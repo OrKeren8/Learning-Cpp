@@ -1,0 +1,22 @@
+steps format:
+reading from left to right
+the first number is the keyboard char (its ASCII value) that was preesed. 
+we or only saving the ship movement keys (a,w,d,x) and ship replace keys (b,s)
+the second number is the time stamp of the key press
+
+for your convenience, here is the ASCII values of the keys:
+a - 97
+w - 119
+d - 100
+x - 120
+b - 98
+s - 115
+
+
+result format:
+reading from left to right
+the first number is the time stamp of the result 
+the second number is the result
+results are as follows:
+0 - death, either by time or by overloading the ship
+1 - level passed, both of the ships reached the end of the level

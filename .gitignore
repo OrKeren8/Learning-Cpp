@@ -32,6 +32,7 @@
 *.app
 
 thunder/.vs
+.vs/
 
 x64/
 
@@ -50,3 +51,9 @@ Constractors/.vs/
 *.vcxproj
 
 *.sln
+
+
+.DS_Store
+
+exercise1/
+
