@@ -18,12 +18,13 @@ enum RequestsEnum : char {
 class UDPClient
 {
 private:
-	WSAData wsaData;
-	SOCKET connSocket;
-	sockaddr_in server;
+	WSAData m_wsaData;
+	SOCKET m_connSocket;
+	sockaddr_in m_server;
 
 public:
 	void init();
 	void sendData();
+	void closeConnection();
 };
 

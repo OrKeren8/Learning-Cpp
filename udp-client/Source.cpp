@@ -5,7 +5,6 @@
 
 using namespace std;
 
-#define TIME_PORT	27015
 
 
 void main()
@@ -13,4 +12,5 @@ void main()
 	UDPClient udpClient = UDPClient();
 	udpClient.init();
 	udpClient.sendData();
+	udpClient.closeConnection();
 }
