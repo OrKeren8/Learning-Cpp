@@ -51,7 +51,7 @@ void main()
 
 	while (true)
 	{
-		bytesRecv = recvfrom(m_socket, recvBuff, 255, 0, &client_addr, &client_addr_len);
+		bytesRecv = recvfrom(m_socket, recvBuff, 2, 0, &client_addr, &client_addr_len);
 		if (SOCKET_ERROR == bytesRecv)
 		{
 			cout << "Time Server: Error at recvfrom(): " << WSAGetLastError() << endl;
