@@ -4,6 +4,17 @@
 #include <winsock2.h> 
 #include <string.h>
 
+#define TIME_PORT	27015
+
+
+enum RequestsEnum : char {
+	A = 'A',
+	B = 'B',
+	C = 'C',
+	D = 'D'
+};
+
+
 class UDPClient
 {
 private:
