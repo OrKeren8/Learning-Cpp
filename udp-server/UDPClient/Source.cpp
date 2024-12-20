@@ -11,7 +11,7 @@ int main()
 {
 	UDPClient udpClient = UDPClient();
 	udpClient.init();
-	udpClient.sendData();
+	udpClient.run();
 	udpClient.closeConnection();
 
 	return 0;

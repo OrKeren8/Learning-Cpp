@@ -61,5 +61,16 @@ void UDPClient::closeConnection() {
 }
 
 void UDPClient::run() {
-
+	bool runningClient = true;
+	char userTaskChoice;
+	
+	while (runningClient) {
+		cout << "Enter Task char to excecute:" << endl;
+		cin >> userTaskChoice;
+		cout << endl;
+		
+		m_sendBuff[0] = userTaskChoice;
+		sendData();
+		cout << endl << endl;
+	}
 }

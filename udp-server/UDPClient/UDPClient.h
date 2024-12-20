@@ -27,9 +27,9 @@ private:
 	char m_sendBuff[2] = "A";
 	char m_recvBuff[255];
 
+	void sendData();
 
 public:
-	void sendData();
 	void init();
 	void run();
 	void closeConnection();
