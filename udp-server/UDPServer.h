@@ -33,6 +33,7 @@ private:
 	static void getFullTime(char o_buffer[SEND_BUFFER_SIZE]);
 	bool closeConnectionAfterException(int i_status);
 	void fillDataByCurrentRequest();
+	void getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]);
 
 public:
 	void InitServer();

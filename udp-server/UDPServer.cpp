@@ -85,14 +85,25 @@ void UDPServer::getFullTime(char o_buffer[SEND_BUFFER_SIZE]) {
 	o_buffer[strlen(o_buffer) - 1] = '\0'; //to remove the new-line from the created string
 }
 
-void UDPServer::fillDataByCurrentRequest(eRequestsEnum i_req) {
+void UDPServer::fillDataByCurrentRequest() {
 	char userChoice = m_recvBuff[0];
 	switch (userChoice)
 	{
 	case 'A':
 		getFullTime(m_sendBuff);
+		break;
+	case 'B':
+		getTimeWithoutDate(m_sendBuff);
+		break;
 	default:
 		break;
 	}
 }
 
+void UDPServer::getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+
+	struct tm* timeInfo = localtime(&timer);
+	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M:%S", timeInfo);
+}

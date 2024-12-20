@@ -22,10 +22,16 @@ private:
 	SOCKET m_connSocket;
 	sockaddr_in m_server;
 
+	int m_bytesSent = 0;
+	int m_bytesRecv = 0;
+	char m_sendBuff[2] = "A";
+	char m_recvBuff[255];
+
 
 public:
-	void init();
 	void sendData();
+	void init();
+	void run();
 	void closeConnection();
 };
 
