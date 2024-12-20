@@ -7,6 +7,13 @@ using namespace std;
 
 #define TIME_PORT	27015
 
+enum eRequestsEnum : char {
+	A = 'A',
+	B = 'B',
+	C = 'C',
+	D = 'D'
+};
+
 class UDPServer
 {
 private:
@@ -23,8 +30,9 @@ private:
 	char m_sendBuff[SEND_BUFFER_SIZE];
 	char m_recvBuff[RECEIVE_BUFFER_SIZE];
 
+	static void getFullTime(char o_buffer[SEND_BUFFER_SIZE]);
 	bool closeConnectionAfterException(int i_status);
-	static void getFullTime(char o_buffer[]);
+	void fillDataByCurrentRequest();
 
 public:
 	void InitServer();

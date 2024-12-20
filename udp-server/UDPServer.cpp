@@ -66,7 +66,7 @@ void UDPServer::ServerRun() {
 		m_recvBuff[1] = '\0';
 		cout << "Time Server: Recieved: " << m_bytesRecv << " bytes of \"" << m_recvBuff << "\" message.\n";
 
-		getFullTime(m_sendBuff);
+		fillDataByCurrentRequest();
 
 		m_bytesSent = sendto(m_socket, m_sendBuff, (int)strlen(m_sendBuff), 0, (const sockaddr*)&m_clientAddr, m_clientAddrLen);
 		if (closeConnectionAfterException(m_bytesSent))
@@ -85,4 +85,14 @@ void UDPServer::getFullTime(char o_buffer[SEND_BUFFER_SIZE]) {
 	o_buffer[strlen(o_buffer) - 1] = '\0'; //to remove the new-line from the created string
 }
 
+void UDPServer::fillDataByCurrentRequest(eRequestsEnum i_req) {
+	char userChoice = m_recvBuff[0];
+	switch (userChoice)
+	{
+	case 'A':
+		getFullTime(m_sendBuff);
+	default:
+		break;
+	}
+}
 
