@@ -95,6 +95,9 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'B':
 		getTimeWithoutDate(m_sendBuff);
 		break;
+	case 'C':
+		getTimeSinceEpoch(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -106,4 +109,11 @@ void UDPServer::getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]) {
 
 	struct tm* timeInfo = localtime(&timer);
 	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M:%S", timeInfo);
+}
+
+void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+
+	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(timer));
 }
