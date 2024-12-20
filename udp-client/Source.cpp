@@ -7,10 +7,12 @@ using namespace std;
 
 
 
-void main()
+int main()
 {
 	UDPClient udpClient = UDPClient();
 	udpClient.init();
 	udpClient.sendData();
 	udpClient.closeConnection();
+
+	return 0;
 }

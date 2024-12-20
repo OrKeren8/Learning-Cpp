@@ -22,6 +22,7 @@ private:
 	SOCKET m_connSocket;
 	sockaddr_in m_server;
 
+
 public:
 	void init();
 	void sendData();
