@@ -79,13 +79,6 @@ void UDPServer::ServerRun() {
 	}
 }
 
-void UDPServer::getFullTime(char o_buffer[SEND_BUFFER_SIZE]) {
-	time_t timer;
-	time(&timer);
-	strcpy(o_buffer, ctime(&timer));
-	o_buffer[strlen(o_buffer) - 1] = '\0'; //to remove the new-line from the created string
-}
-
 void UDPServer::fillDataByCurrentRequest() {
 	char userChoice = m_recvBuff[0];
 	switch (userChoice)
@@ -101,9 +94,20 @@ void UDPServer::fillDataByCurrentRequest() {
 		break;
 	case 'D':
 		getTimeSinceReset(m_sendBuff);
+		break;
+	case 'F':
+		getTimeWithoutDateOrSeconds(m_sendBuff);
+		break;
 	default:
 		break;
 	}
+}
+
+void UDPServer::getFullTime(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+	strcpy(o_buffer, ctime(&timer));
+	o_buffer[strlen(o_buffer) - 1] = '\0'; //to remove the new-line from the created string
 }
 
 void UDPServer::getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]) {
@@ -112,6 +116,14 @@ void UDPServer::getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]) {
 
 	struct tm* timeInfo = localtime(&timer);
 	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M:%S", timeInfo);
+}
+
+void UDPServer::getTimeWithoutDateOrSeconds(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+
+	struct tm* timeInfo = localtime(&timer);
+	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M", timeInfo);
 }
 
 void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {

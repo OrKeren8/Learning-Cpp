@@ -92,6 +92,8 @@ void UDPClient::printMenu() {
 	cout << "B: get time without date" << endl;
 	cout << "C: get time since Epoch" << endl;
 	cout << "D: get client to server estimated delay" << endl;
+	cout << "E: get estimated RTT" << endl;
+	cout << "F: get time without date or seconds" << endl;
 	cout << endl;
 }
 
@@ -109,6 +111,12 @@ void UDPClient::implementTaskByCurrentRequest(char i_userChoice) {
 		break;
 	case 'D':
 		getClientToServerDelayEstimation(i_userChoice);
+		break;
+	case 'E':
+		measureRTT(i_userChoice);
+		break;
+	case 'F':
+		basicReq(i_userChoice);
 		break;
 	default:
 		break;
@@ -140,5 +148,25 @@ void UDPClient::getClientToServerDelayEstimation(char i_userChoice) {
 		t1 = t2;
 	}
 	delay = (float)sumDelay / 99;
-	cout << "Estimated time delay for requesrt	 is:" << delay << endl;
+	cout << "Estimated client to server delay is:" << delay << endl;
+}
+
+void UDPClient::measureRTT(char i_userChoice) {
+	DWORD t1, t2, sumRtt;
+	float rtt;
+
+	m_sendBuff[0] = 'D';
+	sumRtt = 0;
+	sendData();
+	receiveData();
+	t1 = static_cast<DWORD>(std::stoul(m_recvBuff));
+	for (int i = 0; i < 99; i++) {
+		sendData();
+		receiveData();
+		t2 = static_cast<DWORD>(std::stoul(m_recvBuff));
+		sumRtt += (t2 - t1);
+		t1 = t2;
+	}
+	rtt = (float)sumRtt / 99;
+	cout << "Estimated RTT is: " << rtt << endl;
 }

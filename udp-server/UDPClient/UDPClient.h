@@ -33,6 +33,7 @@ private:
 	void getClientToServerDelayEstimation(char i_userChoice);
 	void implementTaskByCurrentRequest(char i_userChoice);
 	void basicReq(char i_userChoice);
+	void measureRTT(char i_userChoice);
 
 public:
 	void init();

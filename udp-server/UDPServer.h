@@ -36,6 +36,8 @@ private:
 	void getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]);
 	void getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]);
 	void getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]);
+	void getTimeWithoutDateOrSeconds(char o_buffer[SEND_BUFFER_SIZE]);
+
 
 public:
 	void InitServer();
