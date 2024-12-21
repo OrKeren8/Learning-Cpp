@@ -28,6 +28,7 @@ private:
 	char m_recvBuff[255];
 
 	void sendData();
+	void printMenu();
 
 public:
 	void init();

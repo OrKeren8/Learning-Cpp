@@ -64,13 +64,25 @@ void UDPClient::run() {
 	bool runningClient = true;
 	char userTaskChoice;
 	
+	cout << endl;
+
 	while (runningClient) {
+		printMenu();
 		cout << "Enter Task char to excecute:" << endl;
 		cin >> userTaskChoice;
 		cout << endl;
 		
 		m_sendBuff[0] = userTaskChoice;
 		sendData();
-		cout << endl << endl;
+		cout << endl;
 	}
+}
+
+void UDPClient::printMenu() {
+	cout << "=============== Menu ===============" << endl;
+	cout << "A: get time" << endl;
+	cout << "B: get time without date" << endl;
+	cout << "C: get time since Epoch" << endl;
+	cout << "D: get client to server estimated delay" << endl;
+	cout << endl;
 }
