@@ -114,19 +114,11 @@ void UDPServer::getFullTime(char o_buffer[SEND_BUFFER_SIZE]) {
 }
 
 void UDPServer::getTimeWithoutDate(char o_buffer[SEND_BUFFER_SIZE]) {
-	time_t timer;
-	time(&timer);
-
-	struct tm* timeInfo = localtime(&timer);
-	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M:%S", timeInfo);
+	addTimeByFilterToBuffer(o_buffer, "%H:%M:%S");
 }
 
 void UDPServer::getTimeWithoutDateOrSeconds(char o_buffer[SEND_BUFFER_SIZE]) {
-	time_t timer;
-	time(&timer);
-
-	struct tm* timeInfo = localtime(&timer);
-	strftime(o_buffer, SEND_BUFFER_SIZE, "%H:%M", timeInfo);
+	addTimeByFilterToBuffer(o_buffer, "%H:%M");
 }
 
 void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {
@@ -137,11 +129,7 @@ void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {
 }
 
 void UDPServer::getYear(char o_buffer[SEND_BUFFER_SIZE]) {
-	time_t timer;
-	time(&timer);
-
-	struct tm* timeInfo = localtime(&timer);
-	strftime(o_buffer, SEND_BUFFER_SIZE, "%Y", timeInfo);
+	addTimeByFilterToBuffer(o_buffer, "%Y");
 }
 
 void UDPServer::getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]) {
@@ -149,4 +137,15 @@ void UDPServer::getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]) {
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%lu", static_cast<unsigned long>(currTime));
 }
 
+//void UDPServer::getMonthAndDay(char o_buffer[SEND_BUFFER_SIZE]) {
+	
+//	addTimeByFilterToBuffer(o_buffer, "")
+//}
 
+void UDPServer::addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string i_filter) {
+	time_t timer;
+	time(&timer);
+
+	struct tm* timeInfo = localtime(&timer);
+	strftime(o_buffer, SEND_BUFFER_SIZE, i_filter.c_str(), timeInfo);
+}

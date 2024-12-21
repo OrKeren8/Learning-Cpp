@@ -38,6 +38,8 @@ private:
 	void getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]);
 	void getTimeWithoutDateOrSeconds(char o_buffer[SEND_BUFFER_SIZE]);
 	void getYear(char o_buffer[SEND_BUFFER_SIZE]);
+	void getMonthAndDay(char o_buffer[SEND_BUFFER_SIZE]);
+	void addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string i_filter);
 
 
 public:
