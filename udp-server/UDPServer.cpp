@@ -101,6 +101,9 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'G':
 		getYear(m_sendBuff);
 		break;
+	case 'H':
+		getMonthAndDay(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -137,10 +140,10 @@ void UDPServer::getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]) {
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%lu", static_cast<unsigned long>(currTime));
 }
 
-//void UDPServer::getMonthAndDay(char o_buffer[SEND_BUFFER_SIZE]) {
+void UDPServer::getMonthAndDay(char o_buffer[SEND_BUFFER_SIZE]) {
 	
-//	addTimeByFilterToBuffer(o_buffer, "")
-//}
+	addTimeByFilterToBuffer(o_buffer, "%m:%d");
+}
 
 void UDPServer::addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string i_filter) {
 	time_t timer;
