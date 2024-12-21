@@ -122,23 +122,23 @@ void UDPClient::basicReq(char i_userChoice) {
 }
 
 void UDPClient::getClientToServerDelayEstimation(char i_userChoice) {
-	DWORD t1, t2, sumRtt;
-	float rtt;
+	DWORD t1, t2, sumDelay;
+	float delay;
 
 	m_sendBuff[0] = i_userChoice;
 	for (int i = 0; i < 100; i++) {
 		sendData();
 	}
 	
-	sumRtt = 0;
+	sumDelay = 0;
 	receiveData();
 	t1 = static_cast<DWORD>(std::stoul(m_recvBuff));
 	for (int i = 0; i < 99; i++) {
 		receiveData();
 		t2 = static_cast<DWORD>(std::stoul(m_recvBuff));
-		sumRtt += (t2 - t1);
+		sumDelay += (t2 - t1);
 		t1 = t2;
 	}
-	rtt = (float)sumRtt / 99;
-	cout << "Estimated RTT is:" << rtt << endl;
+	delay = (float)sumDelay / 99;
+	cout << "Estimated time delay for requesrt	 is:" << delay << endl;
 }
