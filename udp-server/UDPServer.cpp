@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "UDPServer.h"
 #include <string.h>
+#include <iostream>
 
 
 void UDPServer::InitServer() {
@@ -98,6 +99,8 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'C':
 		getTimeSinceEpoch(m_sendBuff);
 		break;
+	case 'D':
+		getTimeSinceReset(m_sendBuff);
 	default:
 		break;
 	}
@@ -116,4 +119,9 @@ void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {
 	time(&timer);
 
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(timer));
+}
+
+void UDPServer::getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]) {
+	DWORD currTime = GetTickCount();
+	snprintf(o_buffer, SEND_BUFFER_SIZE, "%lu", static_cast<unsigned long>(currTime));
 }
