@@ -96,6 +96,7 @@ void UDPClient::printMenu() {
 	cout << "F: get time without date or seconds" << endl;
 	cout << "G: get year" << endl;
 	cout << "H: get month and day" << endl;
+	cout << "I: get seconds from start of the month" << endl;
 	cout << endl;
 }
 
@@ -124,6 +125,9 @@ void UDPClient::implementTaskByCurrentRequest(char i_userChoice) {
 		basicReq(i_userChoice);
 		break;
 	case 'H':
+		basicReq(i_userChoice);
+		break;
+	case 'I':
 		basicReq(i_userChoice);
 		break;
 	default:

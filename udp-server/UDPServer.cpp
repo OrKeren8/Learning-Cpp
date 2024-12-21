@@ -104,6 +104,9 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'H':
 		getMonthAndDay(m_sendBuff);
 		break;
+	case 'I':
+		getSecondsSinceBeginingOfMonth(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -151,4 +154,20 @@ void UDPServer::addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string 
 
 	struct tm* timeInfo = localtime(&timer);
 	strftime(o_buffer, SEND_BUFFER_SIZE, i_filter.c_str(), timeInfo);
+}
+
+void UDPServer::getSecondsSinceBeginingOfMonth(char o_buffer[SEND_BUFFER_SIZE]){
+	time_t timer;
+	time(&timer);
+
+	struct tm* timeInfo = localtime(&timer);
+
+	struct tm startOfMonth = *timeInfo;
+	startOfMonth.tm_mday = 1;
+	startOfMonth.tm_hour = 0;
+	startOfMonth.tm_min = 0;
+	startOfMonth.tm_sec = 0;
+	time_t startOfMonthTime = mktime(&startOfMonth);
+	time_t secondsSinceStart = timer - startOfMonthTime;
+	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(secondsSinceStart));
 }
