@@ -27,8 +27,12 @@ private:
 	char m_sendBuff[2] = "A";
 	char m_recvBuff[255];
 
-	void sendData();
+	void sendData(bool i_toPrint=false);
+	void receiveData(bool i_toPrint=false);
 	void printMenu();
+	void getClientToServerDelayEstimation(char i_userChoice);
+	void implementTaskByCurrentRequest(char i_userChoice);
+	void basicReq(char i_userChoice);
 
 public:
 	void init();

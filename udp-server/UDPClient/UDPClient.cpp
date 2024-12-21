@@ -26,8 +26,7 @@ void UDPClient::init() {
 	m_server.sin_port = htons(TIME_PORT);
 }
 
-void UDPClient::sendData() {
-
+void UDPClient::sendData(bool i_toPrint) {
 
 	m_bytesSent = sendto(m_connSocket, m_sendBuff, (int)strlen(m_sendBuff), 0, (const sockaddr*)&m_server, sizeof(m_server));
 	if (SOCKET_ERROR == m_bytesSent)
@@ -37,8 +36,13 @@ void UDPClient::sendData() {
 		WSACleanup();
 		return;
 	}
+	
+	if (i_toPrint) {
 	cout << "Time Client: Sent: " << m_bytesSent << "/" << strlen(m_sendBuff) << " bytes of \"" << m_sendBuff << "\" message.\n";
+	}
+}
 
+void UDPClient::receiveData(bool i_toPrint) {
 	m_bytesRecv = recv(m_connSocket, m_recvBuff, 255, 0);
 	if (SOCKET_ERROR == m_bytesRecv)
 	{
@@ -49,9 +53,11 @@ void UDPClient::sendData() {
 	}
 
 	m_recvBuff[m_bytesRecv] = '\0'; //add the null-terminating to make it a string
-	cout << "Time Client: Recieved: " << m_bytesRecv << " bytes of \"" << m_recvBuff << "\" message.\n";
-
+	if (i_toPrint) {
+		cout << "Time Client: Recieved: " << m_bytesRecv << " bytes of \"" << m_recvBuff << "\" message.\n";
+	}
 }
+
 
 void UDPClient::closeConnection() {
 	cout << "Time Client: Closing Connection.\n";
@@ -59,6 +65,13 @@ void UDPClient::closeConnection() {
 
 	system("pause");
 }
+
+void UDPClient::getClientToServerDelayEstimation(char i_userChoice) {
+	for (int i = 0; i < 100; i++) {
+
+	}
+}
+
 
 void UDPClient::run() {
 	bool runningClient = true;
@@ -71,9 +84,7 @@ void UDPClient::run() {
 		cout << "Enter Task char to excecute:" << endl;
 		cin >> userTaskChoice;
 		cout << endl;
-		
-		m_sendBuff[0] = userTaskChoice;
-		sendData();
+		implementTaskByCurrentRequest(userTaskChoice);
 		cout << endl;
 	}
 }
@@ -85,4 +96,30 @@ void UDPClient::printMenu() {
 	cout << "C: get time since Epoch" << endl;
 	cout << "D: get client to server estimated delay" << endl;
 	cout << endl;
+}
+
+void UDPClient::implementTaskByCurrentRequest(char i_userChoice) {
+	switch (i_userChoice)
+	{
+	case 'A':
+		basicReq(i_userChoice);
+		break;
+	case 'B':
+		basicReq(i_userChoice);
+		break;
+	case 'C':
+		basicReq(i_userChoice);
+		break;
+	case 'D':
+		getClientToServerDelayEstimation(i_userChoice);
+		break;
+	default:
+		break;
+	}
+}
+
+void UDPClient::basicReq(char i_userChoice) {
+	m_sendBuff[0] = i_userChoice;
+	sendData(true);
+	receiveData(true);
 }
