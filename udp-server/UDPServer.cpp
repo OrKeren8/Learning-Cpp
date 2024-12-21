@@ -98,6 +98,9 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'F':
 		getTimeWithoutDateOrSeconds(m_sendBuff);
 		break;
+	case 'G':
+		getYear(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -133,7 +136,17 @@ void UDPServer::getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]) {
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(timer));
 }
 
+void UDPServer::getYear(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+
+	struct tm* timeInfo = localtime(&timer);
+	strftime(o_buffer, SEND_BUFFER_SIZE, "%Y", timeInfo);
+}
+
 void UDPServer::getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]) {
 	DWORD currTime = GetTickCount();
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%lu", static_cast<unsigned long>(currTime));
 }
+
+

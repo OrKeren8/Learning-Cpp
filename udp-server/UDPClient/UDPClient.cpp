@@ -94,6 +94,7 @@ void UDPClient::printMenu() {
 	cout << "D: get client to server estimated delay" << endl;
 	cout << "E: get estimated RTT" << endl;
 	cout << "F: get time without date or seconds" << endl;
+	cout << "G: get year" << endl;
 	cout << endl;
 }
 
@@ -116,6 +117,9 @@ void UDPClient::implementTaskByCurrentRequest(char i_userChoice) {
 		measureRTT(i_userChoice);
 		break;
 	case 'F':
+		basicReq(i_userChoice);
+		break;
+	case 'G':
 		basicReq(i_userChoice);
 		break;
 	default:

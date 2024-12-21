@@ -37,6 +37,7 @@ private:
 	void getTimeSinceEpoch(char o_buffer[SEND_BUFFER_SIZE]);
 	void getTimeSinceReset(char o_buffer[SEND_BUFFER_SIZE]);
 	void getTimeWithoutDateOrSeconds(char o_buffer[SEND_BUFFER_SIZE]);
+	void getYear(char o_buffer[SEND_BUFFER_SIZE]);
 
 
 public:
