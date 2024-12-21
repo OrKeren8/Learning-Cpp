@@ -41,6 +41,7 @@ private:
 	void getMonthAndDay(char o_buffer[SEND_BUFFER_SIZE]);
 	void addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string i_filter);
 	void getSecondsSinceBeginingOfMonth(char o_buffer[SEND_BUFFER_SIZE]);
+	void getWeekOfYear(char o_buffer[SEND_BUFFER_SIZE]);
 
 
 public:

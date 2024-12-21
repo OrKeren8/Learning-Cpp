@@ -107,6 +107,9 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'I':
 		getSecondsSinceBeginingOfMonth(m_sendBuff);
 		break;
+	case 'J':
+		getWeekOfYear(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -170,4 +173,13 @@ void UDPServer::getSecondsSinceBeginingOfMonth(char o_buffer[SEND_BUFFER_SIZE]){
 	time_t startOfMonthTime = mktime(&startOfMonth);
 	time_t secondsSinceStart = timer - startOfMonthTime;
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(secondsSinceStart));
+}
+
+void UDPServer::getWeekOfYear(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+	struct tm* timeInfo = localtime(&timer);
+	int weekNum = timeInfo->tm_yday / 7;
+
+	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(weekNum));
 }
