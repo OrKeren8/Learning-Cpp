@@ -110,6 +110,12 @@ void UDPServer::fillDataByCurrentRequest() {
 	case 'J':
 		getWeekOfYear(m_sendBuff);
 		break;
+	case 'K':
+		getDaylightSavings(m_sendBuff);
+		break;
+	case 'L':
+		measureTimeLap(m_sendBuff);
+		break;
 	default:
 		break;
 	}
@@ -182,4 +188,28 @@ void UDPServer::getWeekOfYear(char o_buffer[SEND_BUFFER_SIZE]) {
 	int weekNum = timeInfo->tm_yday / 7;
 
 	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(weekNum));
+}
+
+void UDPServer::getDaylightSavings(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer;
+	time(&timer);
+	struct tm* timeInfo = localtime(&timer);
+	bool daylighState = timeInfo->tm_isdst;
+
+	snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(daylighState));
+}
+
+void UDPServer::measureTimeLap(char o_buffer[SEND_BUFFER_SIZE]) {
+	time_t timer, delta;
+	time(&timer);
+
+	if ((timer - m_timeLap) <= 180) {
+		delta = timer - m_timeLap;
+		m_timeLap = timer;
+		snprintf(o_buffer, SEND_BUFFER_SIZE, "%ld", static_cast<long>(delta));
+	}
+	else {
+		m_timeLap = timer;
+		strcpy(o_buffer, "New time lap was set");
+	}
 }

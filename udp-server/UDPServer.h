@@ -29,6 +29,7 @@ private:
 	int m_bytesRecv = 0;
 	char m_sendBuff[SEND_BUFFER_SIZE];
 	char m_recvBuff[RECEIVE_BUFFER_SIZE];
+	time_t m_timeLap;
 
 	static void getFullTime(char o_buffer[SEND_BUFFER_SIZE]);
 	bool closeConnectionAfterException(int i_status);
@@ -42,6 +43,8 @@ private:
 	void addTimeByFilterToBuffer(char o_buffer[SEND_BUFFER_SIZE], string i_filter);
 	void getSecondsSinceBeginingOfMonth(char o_buffer[SEND_BUFFER_SIZE]);
 	void getWeekOfYear(char o_buffer[SEND_BUFFER_SIZE]);
+	void getDaylightSavings(char o_buffer[SEND_BUFFER_SIZE]);
+	void measureTimeLap(char o_buffer[SEND_BUFFER_SIZE]);
 
 
 public:

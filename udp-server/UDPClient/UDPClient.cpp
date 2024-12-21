@@ -98,6 +98,8 @@ void UDPClient::printMenu() {
 	cout << "H: get month and day" << endl;
 	cout << "I: get seconds from start of the month" << endl;
 	cout << "J: get week of year" << endl;
+	cout << "K: get dayligh savings" << endl;
+	cout << "L: get time lap" << endl;
 	cout << endl;
 }
 
@@ -132,6 +134,12 @@ void UDPClient::implementTaskByCurrentRequest(char i_userChoice) {
 		basicReq(i_userChoice);
 		break;
 	case 'J':
+		basicReq(i_userChoice);
+		break;
+	case 'K':
+		basicReq(i_userChoice);
+		break;
+	case 'L':
 		basicReq(i_userChoice);
 		break;
 	default:
