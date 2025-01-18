@@ -119,6 +119,8 @@ void TCPServer::MainServerLoop()
 
 bool TCPServer::registerSocket(SOCKET socketDescriptor, enum eSocketStateType stateType)
 {
+	bool res = false;
+
 	for (int i = 0; i < MAX_SOCKETS; i++)
 	{
 		if (socketStates[i].recv == EMPTY)
@@ -129,10 +131,10 @@ bool TCPServer::registerSocket(SOCKET socketDescriptor, enum eSocketStateType st
 			socketStates[i].recv = stateType;
 			socketStates[i].send = IDLE;
 			activeSocketCount++;
-			return (true);
+			res = true;
 		}
 	}
-	return (false);
+	return res;
 }
 
 void TCPServer::resetSocket(int idx)
@@ -201,7 +203,7 @@ void TCPServer::handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest)
 			{"HEAD", HEAD},
 			{"POST", POST},
 			{"PUT", PUT},
-			{"DELETE", DDELETE},
+			{"DELETE", DELETE_},
 			{"TRACE", TRACE}
 		};
 
@@ -295,7 +297,7 @@ void TCPServer::processOutgoingMessage(int idx)
 
 		break;
 	}
-	case DDELETE:
+	case DELETE_:
 	{
 		string getMsg = GetMessagesDELETE(idx);
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
@@ -350,14 +352,10 @@ void TCPServer::appendLanguageToFileName(int idx)
 
 string TCPServer::parseRequestBody(const char* buffer, int bufferLen)
 {
-	// Convert the buffer to a string to use string operations
 	std::string bufferStr(buffer, bufferLen);
-
-	// Find the position of the end of the headers
 	size_t headerEndPos = bufferStr.find("\r\n\r\n");
 
 	if (headerEndPos != std::string::npos) {
-		// The body starts after the end of the headers
 		size_t bodyStartPos = headerEndPos + 4;
 		return bufferStr.substr(bodyStartPos);
 	}

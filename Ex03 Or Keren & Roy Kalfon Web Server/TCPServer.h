@@ -26,7 +26,7 @@ enum eHTTPRequestType
 	HEAD,
 	POST,
 	PUT,
-	DDELETE,
+	DELETE_,
 	TRACE,
 };
 
