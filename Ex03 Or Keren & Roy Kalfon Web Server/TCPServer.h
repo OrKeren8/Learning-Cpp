@@ -14,6 +14,10 @@ using namespace std;
 #define MAX_SOCKETS 60
 #define TIME_PORT 8080
 
+#define ENGLISH_STR "en"
+#define HEBREW_STR "he"
+#define FRANCH_STR "en"
+
 
 enum eHTTPRequestType
 {

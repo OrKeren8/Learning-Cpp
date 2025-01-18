@@ -334,15 +334,15 @@ void TCPServer::appendLanguageToFileName(int idx)
 	string requestedLangauge = socketStates[idx].fileName.substr(socketStates[idx].fileName.find("=") + 1);
 	socketStates[idx].fileName.erase(socketStates[idx].fileName.find("?"));
 
-	if (requestedLangauge == "he")
+	if (requestedLangauge == HEBREW_STR)
 	{
 		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-he");
 	}
-	else if (requestedLangauge == "en")
+	else if (requestedLangauge == ENGLISH_STR)
 	{
 		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-en");
 	}
-	else if (requestedLangauge == "fr")
+	else if (requestedLangauge == FRANCH_STR)
 	{
 		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-fr");
 	}
@@ -515,15 +515,15 @@ string TCPServer::GetMessagesGET(int idx, string* sendbuff, int* responseBufferL
 	if (socketStates[idx].fileName.find("?lang") != string::npos)
 	{
 		requestedLangauge = socketStates[idx].fileName.substr(socketStates[idx].fileName.find("=") + 1);
-		if (strncmp(requestedLangauge.c_str(), "he", 2) == 0)
+		if (strncmp(requestedLangauge.c_str(), HEBREW_STR, 2) == 0)
 		{
 			return readFileContent(HEBREW, socketStates[idx].fileName, sendbuff, responseBufferLength);
 		}
-		else if (strncmp(requestedLangauge.c_str(), "en", 2) == 0)
+		else if (strncmp(requestedLangauge.c_str(), ENGLISH_STR, 2) == 0)
 		{
 			return  readFileContent(ENGLISH, socketStates[idx].fileName, sendbuff, responseBufferLength);
 		}
-		else if (strncmp(requestedLangauge.c_str(), "fr", 2) == 0)
+		else if (strncmp(requestedLangauge.c_str(), FRANCH_STR, 2) == 0)
 		{
 			return readFileContent(FRENCH, socketStates[idx].fileName, sendbuff, responseBufferLength);
 		}
