@@ -1,7 +1,14 @@
 #include "TCPServer.h"
 
 
-void TCPServer::MainServerLoop()
+void TCPServer::RunServer() {
+	while (true) {
+		ServerLoop();
+	}
+}
+
+
+void TCPServer::ServerLoop()
 {
 	WSAData wsaData;
 

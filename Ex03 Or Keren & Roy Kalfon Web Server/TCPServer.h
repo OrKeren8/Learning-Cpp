@@ -68,7 +68,7 @@ extern struct RequestContext requests[MAX_SOCKETS];
 class TCPServer
 {
 
-public:
+private:
 	
 	struct RequestContext requests[MAX_SOCKETS] = { 0 };
 	int activeSocketCount = 0;
@@ -92,6 +92,10 @@ public:
 	string Trace(int idx, char* buffer, string* sendbuff, int* responseBufferLength); 
 	string Delete(int idx);
 	string GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength);
-	void MainServerLoop();
+	void ServerLoop();
+	
+public:
+	void RunServer();
+
 };
 

@@ -2,5 +2,5 @@
 
 void main() {
 	TCPServer TServer = TCPServer();
-	TServer.MainServerLoop();
+	TServer.RunServer();
 }
