@@ -44,8 +44,8 @@ void TCPServer::MainServerLoop()
 		FD_ZERO(&waitRecv);
 		for (int i = 0; i < MAX_SOCKETS; i++)
 		{
-			if ((socketStates[i].recv == LISTEN) || (socketStates[i].recv == RECEIVE)) {
-				FD_SET(socketStates[i].id, &waitRecv);
+			if ((requests[i].recv == LISTEN) || (requests[i].recv == RECEIVE)) {
+				FD_SET(requests[i].id, &waitRecv);
 			}
 		}
 
@@ -53,8 +53,8 @@ void TCPServer::MainServerLoop()
 		FD_ZERO(&waitSend);
 		for (int i = 0; i < MAX_SOCKETS; i++)
 		{
-			if (socketStates[i].send == SEND) {
-				FD_SET(socketStates[i].id, &waitSend);
+			if (requests[i].send == SEND) {
+				FD_SET(requests[i].id, &waitSend);
 			}
 		}
 		int nfd;
@@ -72,20 +72,20 @@ void TCPServer::MainServerLoop()
 
 		for (int i = 0; i < MAX_SOCKETS && nfd > 0; i++)
 		{
-			if (FD_ISSET(socketStates[i].id, &waitRecv))
+			if (FD_ISSET(requests[i].id, &waitRecv))
 			{
 				time_t now = time(0);
 
-				if (now - socketStates[i].requestTime > 120)
+				if (now - requests[i].requestTime > 120)
 				{
-					closesocket(socketStates[i].id);
-					socketStates[i].recv = EMPTY;
-					socketStates[i].send = EMPTY;
+					closesocket(requests[i].id);
+					requests[i].recv = EMPTY;
+					requests[i].send = EMPTY;
 				}
 				else
 				{
 					nfd--;
-					switch (socketStates[i].recv)
+					switch (requests[i].recv)
 					{
 					case LISTEN:
 						handleNewConnection(i);
@@ -101,10 +101,10 @@ void TCPServer::MainServerLoop()
 
 		for (int i = 0; i < MAX_SOCKETS && nfd > 0; i++)
 		{
-			if (FD_ISSET(socketStates[i].id, &waitSend))
+			if (FD_ISSET(requests[i].id, &waitSend))
 			{
 				nfd--;
-				if (socketStates[i].send == SEND)
+				if (requests[i].send == SEND)
 				{
 					processOutgoingMessage(i);
 				}
@@ -123,13 +123,13 @@ bool TCPServer::registerSocket(SOCKET socketDescriptor, enum eSocketStateType st
 
 	for (int i = 0; (i < MAX_SOCKETS) && !res; i++)
 	{
-		if (socketStates[i].recv == EMPTY)
+		if (requests[i].recv == EMPTY)
 		{
-			socketStates[i].id = socketDescriptor;
-			socketStates[i].requestTime = time(0);
-			socketStates[i].len = 0;
-			socketStates[i].recv = stateType;
-			socketStates[i].send = IDLE;
+			requests[i].id = socketDescriptor;
+			requests[i].requestTime = time(0);
+			requests[i].len = 0;
+			requests[i].recv = stateType;
+			requests[i].send = IDLE;
 			activeSocketCount++;
 			res = true;
 		}
@@ -139,8 +139,8 @@ bool TCPServer::registerSocket(SOCKET socketDescriptor, enum eSocketStateType st
 
 void TCPServer::resetSocket(int idx)
 {
-	socketStates[idx].recv = EMPTY;
-	socketStates[idx].send = EMPTY;
+	requests[idx].recv = EMPTY;
+	requests[idx].send = EMPTY;
 }
 
 void TCPServer::unregisterSocket(int idx)
@@ -151,7 +151,7 @@ void TCPServer::unregisterSocket(int idx)
 
 void TCPServer::handleNewConnection(int idx)
 {
-	SOCKET id = socketStates[idx].id;
+	SOCKET id = requests[idx].id;
 	struct sockaddr_in clientAddress;		
 	int clientAddressLen = sizeof(clientAddress);
 
@@ -181,7 +181,7 @@ void TCPServer::handleNewConnection(int idx)
 void TCPServer::handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest)
 {
 	string bufferRequestStart(i_BuffRequest);
-	socketStates[i_SokcetIndex].reqBuffer = bufferRequestStart;
+	requests[i_SokcetIndex].reqBuffer = bufferRequestStart;
 
 	string request(i_BuffRequest);
 	size_t position = request.find(' ');
@@ -196,7 +196,7 @@ void TCPServer::handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest)
 		}
 
 
-		socketStates[i_SokcetIndex].fileName = "C:\\temp" + fileName;
+		requests[i_SokcetIndex].fileName = "C:\\temp" + fileName;
 
 		static const std::unordered_map<string, eHTTPRequestType> requestMap = {
 			{"OPTIONS", OPTIONS},
@@ -208,8 +208,8 @@ void TCPServer::handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest)
 			{"TRACE", TRACE}
 		};
 
-		socketStates[i_SokcetIndex].requestType = requestMap.at(requestType);
-		socketStates[i_SokcetIndex].send = SEND;
+		requests[i_SokcetIndex].requestType = requestMap.at(requestType);
+		requests[i_SokcetIndex].send = SEND;
 	}
 }
 
@@ -220,9 +220,9 @@ void TCPServer::decrementSocketCount()
 
 void TCPServer::processIncomingMessage(int idx)
 {
-	SOCKET msgSocket = socketStates[idx].id;
-	int currentLength = socketStates[idx].len;
-	int bytesRecv = recv(msgSocket, &socketStates[idx].buffer[currentLength], sizeof(socketStates[idx].buffer) - currentLength, 0);
+	SOCKET msgSocket = requests[idx].id;
+	int currentLength = requests[idx].len;
+	int bytesRecv = recv(msgSocket, &requests[idx].buffer[currentLength], sizeof(requests[idx].buffer) - currentLength, 0);
 
 	if (SOCKET_ERROR == bytesRecv)
 	{
@@ -239,14 +239,14 @@ void TCPServer::processIncomingMessage(int idx)
 	}
 	else
 	{
-		socketStates->requestTime = time(0);
-		socketStates[idx].buffer[currentLength + bytesRecv] = '\0'; 
-		cout << "HTTP Server: Recieved: \" " << bytesRecv << " bytes of \"" << &socketStates[idx].buffer[currentLength] << "\" message.\n";
-		socketStates[idx].len += bytesRecv;
+		requests->requestTime = time(0);
+		requests[idx].buffer[currentLength + bytesRecv] = '\0'; 
+		cout << "HTTP Server: Recieved: \" " << bytesRecv << " bytes of \"" << &requests[idx].buffer[currentLength] << "\" message.\n";
+		requests[idx].len += bytesRecv;
 
-		if (socketStates[idx].len > 0)
+		if (requests[idx].len > 0)
 		{
-			handleHttpRequest(idx, socketStates[idx].buffer);
+			handleHttpRequest(idx, requests[idx].buffer);
 		}
 	}
 
@@ -254,12 +254,12 @@ void TCPServer::processIncomingMessage(int idx)
 
 void TCPServer::processOutgoingMessage(int idx)
 {
-	SOCKET msgSocket = socketStates[idx].id;
+	SOCKET msgSocket = requests[idx].id;
 	string sendbuff, httpHeader, fullMsg;
 	int responseBufferLength = 0;
 	int bytesSent = 0;
 
-	switch (socketStates[idx].requestType)
+	switch (requests[idx].requestType)
 	{
 	case OPTIONS:
 	{
@@ -270,14 +270,14 @@ void TCPServer::processOutgoingMessage(int idx)
 	}
 	case GET:
 	{
-		string getMsg = GetMessagesGET(idx, &sendbuff, &responseBufferLength);
+		string getMsg = Get(idx, &sendbuff, &responseBufferLength);
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader + sendbuff;
 		break;
 	}
 	case HEAD:
 	{
-		string getMsg = GetMessagesGET(idx, &sendbuff, &responseBufferLength);
+		string getMsg = Get(idx, &sendbuff, &responseBufferLength);
 		responseBufferLength = 0;
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader;
@@ -285,14 +285,14 @@ void TCPServer::processOutgoingMessage(int idx)
 	}
 	case POST:
 	{
-		string getMsg = GetMessagesPOST(const_cast<char*>(socketStates[idx].reqBuffer.c_str()));
+		string getMsg = Post(const_cast<char*>(requests[idx].reqBuffer.c_str()));
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader;
 		break;
 	}
 	case PUT:
 	{
-		string getMsg = GetMessagesPUT(idx);
+		string getMsg = Put(idx);
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader;
 
@@ -300,14 +300,14 @@ void TCPServer::processOutgoingMessage(int idx)
 	}
 	case DELETE_:
 	{
-		string getMsg = GetMessagesDELETE(idx);
+		string getMsg = Delete(idx);
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader;
 		break;
 	}
 	case TRACE:
 	{
-		string getMsg = GetMessagesTRACE(idx, socketStates[idx].buffer, &sendbuff, &responseBufferLength);
+		string getMsg = Trace(idx, requests[idx].buffer, &sendbuff, &responseBufferLength);
 		GetMessagesHEAD(idx, &httpHeader, responseBufferLength);
 		fullMsg = getMsg + httpHeader + sendbuff;
 		break;
@@ -327,27 +327,27 @@ void TCPServer::processOutgoingMessage(int idx)
 	}
 	cout << "HTTP Server: Sent: " << bytesSent << "\\" << fullMsg.size() << " bytes of \"" << fullMsg << "\" message.\n";
 
-	memset(socketStates[idx].buffer, '\0', 1024);
-	socketStates[idx].len = 0;
-	socketStates[idx].send = IDLE;
+	memset(requests[idx].buffer, '\0', 1024);
+	requests[idx].len = 0;
+	requests[idx].send = IDLE;
 }
 
 void TCPServer::appendLanguageToFileName(int idx)
 {
-	string requestedLangauge = socketStates[idx].fileName.substr(socketStates[idx].fileName.find("=") + 1);
-	socketStates[idx].fileName.erase(socketStates[idx].fileName.find("?"));
+	string requestedLangauge = requests[idx].fileName.substr(requests[idx].fileName.find("=") + 1);
+	requests[idx].fileName.erase(requests[idx].fileName.find("?"));
 
 	if (requestedLangauge == HEBREW_STR)
 	{
-		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-he");
+		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-he");
 	}
 	else if (requestedLangauge == ENGLISH_STR)
 	{
-		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-en");
+		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-en");
 	}
 	else if (requestedLangauge == FRANCH_STR)
 	{
-		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-fr");
+		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-fr");
 	}
 }
 
@@ -497,7 +497,7 @@ string TCPServer::manageFileOperations(const string& fileName, char* buffer, int
 string TCPServer::GetMessagesHEAD(int idx, string* sendbuff, int responseBufferLength)
 {
 	ostringstream oss;
-	oss << "Date: " << ctime(&(socketStates[idx].requestTime))
+	oss << "Date: " << ctime(&(requests[idx].requestTime))
 		<< "Server: HTTP\r\n"
 		<< "Content-length: " << (responseBufferLength) << "\r\n"
 		<< "Content-type: text/html\r\n\r\n";
@@ -507,48 +507,48 @@ string TCPServer::GetMessagesHEAD(int idx, string* sendbuff, int responseBufferL
 	return "HTTP/1.1 404 NOT FOUND\r\n";
 }
 
-string TCPServer::GetMessagesGET(int idx, string* sendbuff, int* responseBufferLength)
+string TCPServer::Get(int idx, string* sendbuff, int* responseBufferLength)
 {
-	string requestedLangauge;
+	string lang;
 
-	if (socketStates[idx].fileName.find("?lang") != string::npos)
+	if (requests[idx].fileName.find("?lang") != string::npos)
 	{
-		requestedLangauge = socketStates[idx].fileName.substr(socketStates[idx].fileName.find("=") + 1);
-		if (strncmp(requestedLangauge.c_str(), HEBREW_STR, 2) == 0)
+		lang = requests[idx].fileName.substr(requests[idx].fileName.find("=") + 1);
+		if (strncmp(lang.c_str(), HEBREW_STR, 2) == 0)
 		{
-			return readFileContent(HEBREW, socketStates[idx].fileName, sendbuff, responseBufferLength);
+			return readFileContent(HEBREW, requests[idx].fileName, sendbuff, responseBufferLength);
 		}
-		else if (strncmp(requestedLangauge.c_str(), ENGLISH_STR, 2) == 0)
+		else if (strncmp(lang.c_str(), ENGLISH_STR, 2) == 0)
 		{
-			return  readFileContent(ENGLISH, socketStates[idx].fileName, sendbuff, responseBufferLength);
+			return  readFileContent(ENGLISH, requests[idx].fileName, sendbuff, responseBufferLength);
 		}
-		else if (strncmp(requestedLangauge.c_str(), FRANCH_STR, 2) == 0)
+		else if (strncmp(lang.c_str(), FRANCH_STR, 2) == 0)
 		{
-			return readFileContent(FRENCH, socketStates[idx].fileName, sendbuff, responseBufferLength);
+			return readFileContent(FRENCH, requests[idx].fileName, sendbuff, responseBufferLength);
 		}
 	}
 	else
 	{
-		return readFileContent(ENGLISH, socketStates[idx].fileName, sendbuff, responseBufferLength); //for defult send english
+		return readFileContent(ENGLISH, requests[idx].fileName, sendbuff, responseBufferLength);
 	}
 }
 
-string TCPServer::GetMessagesPUT(int idx)
+string TCPServer::Put(int idx)
 {
 	string requestedLangauge;
 
-	if (socketStates[idx].fileName.find("?lang") != EOF)
+	if (requests[idx].fileName.find("?lang") != EOF)
 	{
 		appendLanguageToFileName(idx);
 	}
 	else
 	{
-		socketStates[idx].fileName.insert(socketStates[idx].fileName.find("."), "-en"); //add english file 
+		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-en"); //add english file 
 	}
-	return manageFileOperations(socketStates[idx].fileName, const_cast<char*>(socketStates[idx].reqBuffer.c_str()), socketStates[idx].len);
+	return manageFileOperations(requests[idx].fileName, const_cast<char*>(requests[idx].reqBuffer.c_str()), requests[idx].len);
 }
 
-string TCPServer::GetMessagesPOST(char* buffer)
+string TCPServer::Post(char* buffer)
 {
 	cout << "POST request content:";
 	buffer = buffer + ((string)buffer).find("\n\r") + 3; //to find the request body
@@ -557,7 +557,7 @@ string TCPServer::GetMessagesPOST(char* buffer)
 	return  "HTTP/1.1 200 OK\r\n";
 }
 
-string TCPServer::GetMessagesTRACE(int idx, char* buffer, string* sendbuff, int* responseBufferLength)
+string TCPServer::Trace(int idx, char* buffer, string* sendbuff, int* responseBufferLength)
 {
 	*sendbuff += buffer;
 	*responseBufferLength = (*sendbuff).size();
@@ -565,14 +565,14 @@ string TCPServer::GetMessagesTRACE(int idx, char* buffer, string* sendbuff, int*
 	return "HTTP/1.1 200 No Content\r\n";
 }
 
-string TCPServer::GetMessagesDELETE(int idx)
+string TCPServer::Delete(int idx)
 {
-	if (socketStates[idx].fileName.find("?lang") != string::npos)
+	if (requests[idx].fileName.find("?lang") != string::npos)
 	{
 		appendLanguageToFileName(idx);
 	}
 
-	if (remove(socketStates[idx].fileName.c_str()) != 0)
+	if (remove(requests[idx].fileName.c_str()) != 0)
 	{
 		cout << "The file was not deleted" << endl;
 		return "HTTP/1.1 404 NOT FOUND\r\n";
@@ -583,7 +583,7 @@ string TCPServer::GetMessagesDELETE(int idx)
 
 string TCPServer::GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength)
 {
-	(*sendbuff) += "Allow: HEAD, GET, PUT, POST, TRACE, DELETE, OPTIONS.\n";
+	(*sendbuff) += "Server Options are:\n HEAD, GET, PUT, POST, TRACE, DELETE, OPTIONS.\n";
 	*responseBufferLength += (*sendbuff).length();
 	return "HTTP/1.1 204 No Content\r\n";
 }

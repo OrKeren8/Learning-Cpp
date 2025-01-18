@@ -49,7 +49,7 @@ enum eSupportedLanguages
 	NONE,
 };
 
-struct SocketState
+struct RequestContext
 {
 	SOCKET id;
 	string reqBuffer;
@@ -63,14 +63,14 @@ struct SocketState
 };
 
 extern int activeSocketCount;
-extern struct SocketState socketStates[MAX_SOCKETS];
+extern struct RequestContext requests[MAX_SOCKETS];
 
 class TCPServer
 {
 
 public:
 	
-	struct SocketState socketStates[MAX_SOCKETS] = { 0 };
+	struct RequestContext requests[MAX_SOCKETS] = { 0 };
 	int activeSocketCount = 0;
 
 	bool registerSocket(SOCKET socketDescriptor, enum eSocketStateType stateType); 
@@ -86,11 +86,11 @@ public:
 	string readFileContent(enum eSupportedLanguages langOfPage, string fileName, string* sendBuff, int* responseBufferLength); 
 	string manageFileOperations(const string& fileName, char* buffer, int buffLen); 
 	string GetMessagesHEAD(int idx, string* sendbuff, int responseBufferLength); 
-	string GetMessagesGET(int idx, string* sendbuff, int* responseBufferLength); 
-	string GetMessagesPUT(int idx); 
-	string GetMessagesPOST(char* buffer);
-	string GetMessagesTRACE(int idx, char* buffer, string* sendbuff, int* responseBufferLength); 
-	string GetMessagesDELETE(int idx);
+	string Get(int idx, string* sendbuff, int* responseBufferLength); 
+	string Put(int idx); 
+	string Post(char* buffer);
+	string Trace(int idx, char* buffer, string* sendbuff, int* responseBufferLength); 
+	string Delete(int idx);
 	string GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength);
 	void MainServerLoop();
 };
