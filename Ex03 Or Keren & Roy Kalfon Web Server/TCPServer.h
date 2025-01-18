@@ -68,25 +68,25 @@ public:
 	struct SocketState socketStates[MAX_SOCKETS] = { 0 };
 	int activeSocketCount = 0;
 
-	bool registerSocket(SOCKET socketDescriptor, enum eSocketStateType stateType); //registerSocket
-	void resetSocket(int idx); //added to looks different
-	void unregisterSocket(int idx); //unregisterSocket
-	void handleNewConnection(int idx); //handleNewConnection
-	void handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest); //handleHttpRequest
-	void decrementSocketCount(); //added to looks different
-	void processIncomingMessage(int idx); //processIncomingMessage
-	void processOutgoingMessage(int idx); //processOutgoingMessage
-	void appendLanguageToFileName(int idx); //appendLanguageToFileName
-	string parseRequestBody(const char* buffer, int bufferLen); //parseRequestBody
-	string readFileContent(enum eSupportedLanguages langOfPage, string fileName, string* sendBuff, int* responseBufferLength); //readFileContent
-	string manageFileOperations(const string& fileName, char* buffer, int buffLen); //manageFileOperations
-	string GetMessagesHEAD(int idx, string* sendbuff, int responseBufferLength); //GetMessagesHEAD
-	string GetMessagesGET(int idx, string* sendbuff, int* responseBufferLength); //GetMessagesGET
-	string GetMessagesPUT(int idx); //GetMessagesPUT
-	string GetMessagesPOST(char* buffer); //GetMessagesPOST
-	string GetMessagesTRACE(int idx, char* buffer, string* sendbuff, int* responseBufferLength); //GetMessagesTRACE
-	string GetMessagesDELETE(int idx); //GetMessagesDELETE
-	string GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength); //GetMessagesOPTIONS
+	bool registerSocket(SOCKET socketDescriptor, enum eSocketStateType stateType); 
+	void resetSocket(int idx); 
+	void unregisterSocket(int idx); 
+	void handleNewConnection(int idx); 
+	void handleHttpRequest(int i_SokcetIndex, char* i_BuffRequest); 
+	void decrementSocketCount(); 
+	void processIncomingMessage(int idx); 
+	void processOutgoingMessage(int idx); 
+	void appendLanguageToFileName(int idx); 
+	string parseRequestBody(const char* buffer, int bufferLen); 
+	string readFileContent(enum eSupportedLanguages langOfPage, string fileName, string* sendBuff, int* responseBufferLength); 
+	string manageFileOperations(const string& fileName, char* buffer, int buffLen); 
+	string GetMessagesHEAD(int idx, string* sendbuff, int responseBufferLength); 
+	string GetMessagesGET(int idx, string* sendbuff, int* responseBufferLength); 
+	string GetMessagesPUT(int idx); 
+	string GetMessagesPOST(char* buffer);
+	string GetMessagesTRACE(int idx, char* buffer, string* sendbuff, int* responseBufferLength); 
+	string GetMessagesDELETE(int idx);
+	string GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength);
 	void MainServerLoop();
 
 };
