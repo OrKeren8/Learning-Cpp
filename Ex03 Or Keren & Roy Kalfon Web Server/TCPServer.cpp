@@ -334,18 +334,18 @@ void TCPServer::processOutgoingMessage(int idx)
 
 void TCPServer::appendLanguageToFileName(int idx)
 {
-	string requestedLangauge = requests[idx].fileName.substr(requests[idx].fileName.find("=") + 1);
+	string lang = requests[idx].fileName.substr(requests[idx].fileName.find("=") + 1);
 	requests[idx].fileName.erase(requests[idx].fileName.find("?"));
 
-	if (requestedLangauge == HEBREW_STR)
+	if (lang == HEBREW_STR)
 	{
 		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-he");
 	}
-	else if (requestedLangauge == ENGLISH_STR)
+	else if (lang == ENGLISH_STR)
 	{
 		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-en");
 	}
-	else if (requestedLangauge == FRANCH_STR)
+	else if (lang == FRANCH_STR)
 	{
 		requests[idx].fileName.insert(requests[idx].fileName.find("."), "-fr");
 	}
@@ -353,43 +353,26 @@ void TCPServer::appendLanguageToFileName(int idx)
 
 string TCPServer::parseRequestBody(const char* buffer, int bufferLen)
 {
-	std::string bufferStr(buffer, bufferLen);
-	size_t headerEndPos = bufferStr.find("\r\n\r\n");
+	std::string buf(buffer, bufferLen);
+	size_t headerEndPos = buf.find("\r\n\r\n");
 
 	if (headerEndPos != std::string::npos) {
 		size_t bodyStartPos = headerEndPos + 4;
-		return bufferStr.substr(bodyStartPos);
+		return buf.substr(bodyStartPos);
 	}
 }
 
 string TCPServer::readFileContent(enum eSupportedLanguages langOfPage, string fileName, string* sendBuff, int* responseBufferLength)
 {
 	size_t PositionOfDot = fileName.find(".");
+	string strArr[3] = { "-he", "-en", "-fr" };
 
 	if (PositionOfDot != string::npos)
 	{
 		if (fileName.find("?lang") != string::npos)
 		{
 			fileName.erase(fileName.find("?"));
-
-			switch (langOfPage)
-			{
-			case HEBREW:
-			{
-				fileName.insert(PositionOfDot, "-he");
-				break;
-			}
-			case ENGLISH:
-			{
-				fileName.insert(PositionOfDot, "-en");
-				break;
-			}
-			case FRENCH:
-			{
-				fileName.insert(PositionOfDot, "-fr");
-				break;
-			}
-			}
+			fileName.insert(PositionOfDot, strArr[langOfPage]);
 		}
 		else
 		{
