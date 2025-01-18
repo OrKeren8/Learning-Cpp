@@ -11,7 +11,8 @@
 #include <winsock2.h>
 using namespace std;
 
-#define MAX_SOCKETS 60
+//#define MAX_SOCKETS 60
+const int MAX_SOCKETS = 60;
 #define TIME_PORT 8080
 
 #define ENGLISH_STR "en"
@@ -92,6 +93,5 @@ public:
 	string GetMessagesDELETE(int idx);
 	string GetMessagesOPTIONS(int idx, string* sendbuff, int* responseBufferLength);
 	void MainServerLoop();
-
 };
 

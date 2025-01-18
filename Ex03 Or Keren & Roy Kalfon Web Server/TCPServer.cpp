@@ -121,7 +121,7 @@ bool TCPServer::registerSocket(SOCKET socketDescriptor, enum eSocketStateType st
 {
 	bool res = false;
 
-	for (int i = 0; i < MAX_SOCKETS; i++)
+	for (int i = 0; (i < MAX_SOCKETS) && !res; i++)
 	{
 		if (socketStates[i].recv == EMPTY)
 		{
@@ -151,9 +151,10 @@ void TCPServer::unregisterSocket(int idx)
 
 void TCPServer::handleNewConnection(int idx)
 {
-	struct sockaddr_in clientAddress;		
 	SOCKET id = socketStates[idx].id;
+	struct sockaddr_in clientAddress;		
 	int clientAddressLen = sizeof(clientAddress);
+
 	SOCKET clientSocket = accept(id, (struct sockaddr*)&clientAddress, &clientAddressLen);
 
 	if (INVALID_SOCKET == clientSocket)
