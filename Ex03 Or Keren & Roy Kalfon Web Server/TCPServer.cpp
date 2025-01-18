@@ -1,7 +1,6 @@
 #include "TCPServer.h"
 
 
-
 void TCPServer::MainServerLoop()
 {
 	WSAData wsaData;
@@ -150,7 +149,7 @@ void TCPServer::unregisterSocket(int idx)
 
 void TCPServer::handleNewConnection(int idx)
 {
-	struct sockaddr_in clientAddress;		// Address of sending partner
+	struct sockaddr_in clientAddress;		
 	SOCKET id = socketStates[idx].id;
 	int clientAddressLen = sizeof(clientAddress);
 	SOCKET clientSocket = accept(id, (struct sockaddr*)&clientAddress, &clientAddressLen);
@@ -162,9 +161,6 @@ void TCPServer::handleNewConnection(int idx)
 	}
 	cout << "Time Server: Client " << inet_ntoa(clientAddress.sin_addr) << ":" << ntohs(clientAddress.sin_port) << " is connected." << endl;
 
-	//
-	// Set the socket to be in non-blocking mode.
-	//
 	unsigned long flag = 1;
 	if (ioctlsocket(clientSocket, FIONBIO, &flag) != 0)
 	{
@@ -223,7 +219,6 @@ void TCPServer::processIncomingMessage(int idx)
 {
 	SOCKET msgSocket = socketStates[idx].id;
 	int currentLength = socketStates[idx].len;
-	//int ou = sizeof(socketStates[index].buffer);
 	int bytesRecv = recv(msgSocket, &socketStates[idx].buffer[currentLength], sizeof(socketStates[idx].buffer) - currentLength, 0);
 
 	if (SOCKET_ERROR == bytesRecv)
@@ -242,7 +237,7 @@ void TCPServer::processIncomingMessage(int idx)
 	else
 	{
 		socketStates->requestTime = time(0);
-		socketStates[idx].buffer[currentLength + bytesRecv] = '\0'; //add the null-terminating to make it a string
+		socketStates[idx].buffer[currentLength + bytesRecv] = '\0'; 
 		cout << "HTTP Server: Recieved: \" " << bytesRecv << " bytes of \"" << &socketStates[idx].buffer[currentLength] << "\" message.\n";
 		socketStates[idx].len += bytesRecv;
 
